@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Context } from "../contexts/Context"
 import { useState, useContext } from "react"
-import axios from "axios"
+//import axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
 
 export default function SignIn(){
@@ -10,7 +10,7 @@ export default function SignIn(){
     const [desabilitado, setDesabilitado] = useState("")
     const [textoBotao, setTextoBotao] = useState("Entrar")
     const { setToken, inputAtivo, inputDesbotado } = useContext(Context) 
-    const navigate = useNavigate()
+    //const navigate = useNavigate()
 
     function loginUser(e) {
         /*e.preventDefault() 
