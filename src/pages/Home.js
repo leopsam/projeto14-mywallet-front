@@ -1,90 +1,67 @@
 import styled from "styled-components"
 import { Context } from "../contexts/Context"
-import { useState, useContext } from "react"
+import { useEffect, useState, useContext } from "react"
 import axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
 import logout from "../assets/logout.svg"
 import minus from "../assets/minus.svg"
 import plus from "../assets/plus.svg"
 
-export default function Home(){    
-    const { setToken, inputAtivo, inputDesbotado } = useContext(Context)
+export default function Home(){ 
+    const REACT_APP_API_URL = "http://localhost:5000/mywalletdb/users"   
+    const { token, setToken, count, setCount } = useContext(Context)
     const red = "#C70000"
     const green = "#03AC00"
 
     const navigate = useNavigate()
 
-    function home(e) {
-        /*e.preventDefault() 
-        //setTextoBotao(botaoLoading) 
-        setDesabilitado("disabled")      
-        const body = { email, senha }
-        const url = "http://localhost:5000/mywalletdb/users"
-    
-        const promise = axios.post(url, body)
-        promise.then((res) => { 
-            setToken(res.data.token)
-            console.log()
-            //setUserImage(res.data.image)
-            localStorage.setItem("email", res.data.email);
-            localStorage.setItem("senha", res.data.password);
-            localStorage.setItem("token", res.data.token);
-            navigate("/home") 
-        })
+    useEffect(() => {
+        const url = REACT_APP_API_URL    
+        const config = { headers: { Authorization: `Bearer ${token}` } }    
+        const promise = axios.get(url, config) 
 
-        promise.catch(err => { 
-            setTextoBotao("Entrar") 
-            setDesabilitado("")            
-            alert(err.response.data.message) 
-            console.log(err)          
-        })*/
-      }  
+        promise.then(res => {            
+            console.log(res.response.data)        
+        })        
+        promise.catch((err) => {
+            console.log(err.response.data)
+        })    
+    }, [count])   
 
     return(
         <ContainerHome>
             <Header>
-                <h1>Olá, Fulano</h1>
-                <img src={logout} alt="Logout"/>
+                <h1 data-test="user-name">Olá, Fulano</h1>
+                <img data-test="logout" src={logout} alt="Logout"/>
             </Header>  
             <Wallet>
                 <h2>Não há registros de entrada ou saída</h2>
                 <ContentWallet>
-                    <h4><span>30/11</span>&nbsp; Almoço mãe</h4>
-                    <p>39,90</p>
+                    <h4 data-test="registry-name"><span>30/11</span>&nbsp; Almoço mãe</h4>
+                    <p data-test="registry-amount">39,90</p>
                 </ContentWallet>
-                <ContentWallet>
-                    <h4><span>30/11</span>&nbsp; Almoço mãe</h4>
-                    <p>39,90</p>
-                </ContentWallet>
-                <ContentWallet>
-                    <h4><span>30/11</span>&nbsp; Almoço mãe</h4>
-                    <p>39,90</p>
-                </ContentWallet>
-                <ContentWallet>
-                    <h4><span>30/11</span>&nbsp; Almoço mãe</h4>
-                    <p>39,90</p>
-                </ContentWallet>
-                <ContentWallet>
-                    <h4><span>30/11</span>&nbsp; Almoço mãe</h4>
-                    <p>39,90</p>
-                </ContentWallet>
-                <ContentWallet>
-                    <h4><span>30/11</span>&nbsp; Almoço mãe</h4>
-                    <p>39,90</p>
-                </ContentWallet>
+               
                 <BalanceWallet>
                     <h4>SALDO</h4>
-                    <p>2849,96</p>
+                    <p data-test="total-amount">2849,96</p>
                 </BalanceWallet> 
             </Wallet> 
             <Buttons>
                 <WalletButton>
-                    <img src={plus} alt="Entrada"/>
-                    <h3>Nova entrada</h3>
+                    <LinkOutIn>
+                        <Link data-test="new-income" to={`/nova-entrada`}>
+                            <img src={plus} alt="Entrada"/>
+                            <h3>Nova entrada</h3>
+                        </Link> 
+                    </LinkOutIn>
                 </WalletButton>
                 <WalletButton>
-                    <img src={minus} alt="Saída"/>
-                    <h3>Nova saída</h3>
+                    <LinkOutIn>
+                        <Link data-test="new-expense" to={`/nova-saida`}>
+                            <img src={minus} alt="Saída"/>
+                            <h3>Nova saída</h3>
+                        </Link> 
+                    </LinkOutIn>
                 </WalletButton> 
                           
             </Buttons>        
@@ -196,10 +173,6 @@ const WalletButton = styled.div`
     background-color: #A328D6;
     border-radius: 5px;
     padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
     img{
         width: 25px;
         height: 25px;
@@ -213,4 +186,16 @@ const WalletButton = styled.div`
         color: #FFFFFF;
         width: 50%;
     }    
+`
+const LinkOutIn = styled.div`   
+    width: 100%;
+    height: 100%;
+    a{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        height: 100%;
+        text-decoration: none;
+    }
+       
 `

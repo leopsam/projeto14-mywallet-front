@@ -3,42 +3,49 @@ import { Context } from "../contexts/Context"
 import { useState, useContext } from "react"
 import axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
+import { Bars } from 'react-loader-spinner'
 
 export default function SignUp(){
-    const [nome, setNome] = useState("")
+    const REACT_APP_API_URL = "http://localhost:5000/mywalletdb/users"
+    const [name, setName] = useState("")
     const [email, setEmail] = useState("")
-    const [senha, setSenha] = useState("")
-    const [confirmeSenha, setConfirmeSenha] = useState("")
-    
+    const [password, setPassword] = useState("")
+    const [confPassword, setConfPassword] = useState("")    
     const [desabilitado, setDesabilitado] = useState("")
     const [textoBotao, setTextoBotao] = useState("Cadastrar")
-    const { setToken, inputAtivo, inputDesbotado } = useContext(Context) 
+    const { inputAtivo, inputDesbotado } = useContext(Context) 
     const navigate = useNavigate()
+    const botaoLoading = <Bars 
+        height="30" 
+        width="80" 
+        radius="9"
+        color="#ffffff" 
+        ariaLabel="bars-loading"
+        wrapperStyle={{}}
+        wrapperClassName=""
+        visible={true}    
+    /> 
 
     function cadastrarUser(e) {
-        /*e.preventDefault() 
-        //setTextoBotao(botaoLoading) 
+        e.preventDefault() 
+        setTextoBotao(botaoLoading) 
         setDesabilitado("disabled")      
-        const body = { email, senha }
-        const url = "http://localhost:5000/mywalletdb/users"
+        const body = { name, email, password, confPassword }
+        const url = REACT_APP_API_URL
     
         const promise = axios.post(url, body)
         promise.then((res) => { 
-            setToken(res.data.token)
-            console.log()
-            //setUserImage(res.data.image)
-            localStorage.setItem("email", res.data.email);
-            localStorage.setItem("senha", res.data.password);
-            localStorage.setItem("token", res.data.token);
-            navigate("/home") 
+            alert("Cadastro realizado!")
+            console.log(res.config.data)
+            navigate("/") 
         })
 
         promise.catch(err => { 
-            setTextoBotao("Entrar") 
+            setTextoBotao("Cadastrar") 
             setDesabilitado("")            
-            alert(err.response.data.message) 
+            alert(err.message) 
             console.log(err)          
-        })*/
+        })
       }  
 
     return(
@@ -50,8 +57,8 @@ export default function SignUp(){
                     id="name"
                     type="text"
                     placeholder="Nome"
-                    value={nome}
-                    onChange={e => setNome(e.target.value)} 
+                    value={name}
+                    onChange={e => setName(e.target.value)} 
                     disabled={desabilitado}
                     corFundo={desabilitado ? inputDesbotado : inputAtivo }
                     required
@@ -69,11 +76,11 @@ export default function SignUp(){
                 />
                 <Input
                     data-test="password"
-                    id="senha"
+                    id="password"
                     type="password"
                     placeholder="Senha"
-                    value={senha}
-                    onChange={e => setSenha(e.target.value)}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                     disabled={desabilitado}
                     corFundo={desabilitado ? inputDesbotado : inputAtivo } 
                     required
@@ -83,8 +90,8 @@ export default function SignUp(){
                     id="confirmeSenha"
                     type="password"
                     placeholder="Confirme a senha"
-                    value={confirmeSenha}
-                    onChange={e => setConfirmeSenha(e.target.value)}
+                    value={confPassword}
+                    onChange={e => setConfPassword(e.target.value)}
                     disabled={desabilitado}
                     corFundo={desabilitado ? inputDesbotado : inputAtivo } 
                     required
@@ -131,14 +138,16 @@ const Input = styled.input`
     border: none;
     border-radius: 5px;
     margin: 5px 0;
-    ::placeholder{
-        font-family: 'Raleway';
+    font-family: 'Raleway';
         font-style: normal;
         font-weight: 400;
         font-size: 20px;
         line-height: 23px;
         color: #000000;
-        padding-left: 10px;     
+        padding-left: 10px; 
+
+    ::placeholder{        
+        color: #000000;    
     }
 `
 const Button = styled.button`
@@ -157,6 +166,9 @@ const Button = styled.button`
     align-items: center;
     justify-content: center;
     margin: 5px 0;
+    :active{
+        background-color: #bf89d6;
+    }
 `
 const LinkSignUp = styled.div`
     margin-top: 20px;    
