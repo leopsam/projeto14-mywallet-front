@@ -1,39 +1,41 @@
 import styled from "styled-components"
 import { Context } from "../contexts/Context"
 import { useState, useContext } from "react"
-//import axios from "axios"
+import axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
 
 export default function SignIn(){
     const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [senha, setSenha] = useState("")
     const [desabilitado, setDesabilitado] = useState("")
     const [textoBotao, setTextoBotao] = useState("Entrar")
     const { setToken, inputAtivo, inputDesbotado } = useContext(Context) 
     const navigate = useNavigate()
 
     function loginUser(e) {
-        /*e.preventDefault() 
+        e.preventDefault() 
         //setTextoBotao(botaoLoading) 
         setDesabilitado("disabled")      
-        const body = { email, password }
-        const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login"
+        const body = { email, senha }
+        const url = "http://localhost:5000/mywalletdb/users"
     
         const promise = axios.post(url, body)
         promise.then((res) => { 
             setToken(res.data.token)
-            setUserImage(res.data.image)
+            console.log()
+            //setUserImage(res.data.image)
             localStorage.setItem("email", res.data.email);
             localStorage.setItem("senha", res.data.password);
             localStorage.setItem("token", res.data.token);
-            //navigate("/hoje") 
+            navigate("/home") 
         })
 
         promise.catch(err => { 
             setTextoBotao("Entrar") 
             setDesabilitado("")            
-            alert(err.response.data.message)           
-        })*/
+            alert(err.response.data.message) 
+            console.log(err)          
+        })
       }  
 
     return(
@@ -56,8 +58,8 @@ export default function SignIn(){
                     id="password"
                     type="password"
                     placeholder="Senha"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    value={senha}
+                    onChange={e => setSenha(e.target.value)}
                     disabled={desabilitado}
                     corFundo={desabilitado ? inputDesbotado : inputAtivo } 
                     required
