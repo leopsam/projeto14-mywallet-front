@@ -13,7 +13,7 @@ export default function SignIn(){
     const navigate = useNavigate()
 
     function loginUser(e) {
-        e.preventDefault() 
+        /*e.preventDefault() 
         //setTextoBotao(botaoLoading) 
         setDesabilitado("disabled")      
         const body = { email, senha }
@@ -35,15 +35,15 @@ export default function SignIn(){
             setDesabilitado("")            
             alert(err.response.data.message) 
             console.log(err)          
-        })
+        })*/
       }  
 
     return(
         <ContainerLogin>
-       <TitleBody>My Wallet</TitleBody>
-       <FormLogin onSubmit={loginUser}>
+            <TitleBody>My Wallet</TitleBody>
+            <FormLogin onSubmit={loginUser}>
                 <Input
-                    //data-test="email-input"
+                    data-test="email"
                     id="email"
                     type="email"
                     placeholder="E-mail"
@@ -54,7 +54,7 @@ export default function SignIn(){
                     required
                 />
                 <Input
-                    //data-test="password-input"
+                    data-test="password"
                     id="password"
                     type="password"
                     placeholder="Senha"
@@ -64,10 +64,10 @@ export default function SignIn(){
                     corFundo={desabilitado ? inputDesbotado : inputAtivo } 
                     required
                 />
-                <Button /*data-test="login-btn"*/ disabled={desabilitado} type="submit">{textoBotao}</Button>                
+                <Button data-test="sign-in-submit" disabled={desabilitado} type="submit">{textoBotao}</Button>                
             </FormLogin>
             <LinkSignUp>
-                <Link /*data-test="signup-link"*/ to={`/cadastro`}>
+                <Link to={`/cadastro`}>
                     <p>Primeira vez? Cadastre-se!</p>
                 </Link>                
             </LinkSignUp>
