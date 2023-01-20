@@ -1,19 +1,18 @@
 import styled from "styled-components"
-import { Context } from "../contexts/Context"
-import { useState, useContext } from "react"
 import axios from "axios"
+import { MyWalletContext } from "../contexts/MyWalletContext"
+import { useState, useContext } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { Bars } from 'react-loader-spinner'
 
-export default function SignUp(){
-    const REACT_APP_API_URL = "http://localhost:5000/mywalletdb/users"
+export default function SignUp(){    
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confPassword, setConfPassword] = useState("")    
     const [desabilitado, setDesabilitado] = useState("")
     const [textoBotao, setTextoBotao] = useState("Cadastrar")
-    const { inputAtivo, inputDesbotado } = useContext(Context) 
+    const { inputAtivo, inputDesbotado } = useContext(MyWalletContext) 
     const navigate = useNavigate()
     const botaoLoading = <Bars 
         height="30" 
@@ -29,24 +28,25 @@ export default function SignUp(){
     function cadastrarUser(e) {
         e.preventDefault() 
         setTextoBotao(botaoLoading) 
-        setDesabilitado("disabled")      
+        setDesabilitado("disabled") 
+
+        const REACT_APP_API_URL = "http://localhost:5000/cadastro"
         const body = { name, email, password, confPassword }
-        const url = REACT_APP_API_URL
-    
+        const url = REACT_APP_API_URL    
         const promise = axios.post(url, body)
+
         promise.then((res) => { 
             alert("Cadastro realizado!")
-            console.log(res.config.data)
             navigate("/") 
         })
 
         promise.catch(err => { 
             setTextoBotao("Cadastrar") 
             setDesabilitado("")            
-            alert(err.message) 
+            alert(err.response.data) 
             console.log(err)          
         })
-      }  
+    }  
 
     return(
         <ContainerCadastro>
@@ -139,13 +139,12 @@ const Input = styled.input`
     border-radius: 5px;
     margin: 5px 0;
     font-family: 'Raleway';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 23px;
-        color: #000000;
-        padding-left: 10px; 
-
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    color: #000000;
+    padding-left: 10px;
     ::placeholder{        
         color: #000000;    
     }

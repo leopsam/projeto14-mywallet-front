@@ -5,12 +5,12 @@ import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { Bars } from 'react-loader-spinner'
 
-export default function Out(){    
+export default function In(){   
     const [valor, setValor] = useState("")
     const [descricao, setDescricao] = useState("")
     const [desabilitado, setDesabilitado] = useState("")
-    const [textoBotao, setTextoBotao] = useState("Salvar saída")
-    const { token, inputAtivo, inputDesbotado } = useContext(MyWalletContext) 
+    const [textoBotao, setTextoBotao] = useState("Atualizar entrada")
+    const { inputAtivo, inputDesbotado, idPut, setIdPut } = useContext(MyWalletContext) 
     const navigate = useNavigate()
     const botaoLoading = <Bars 
         height="30" 
@@ -23,35 +23,35 @@ export default function Out(){
         visible={true}    
     /> 
 
-    function novaSaida(e) {
+    function edtarEntrada(e) {
         e.preventDefault() 
         setTextoBotao(botaoLoading) 
-        setDesabilitado("disabled")  
+        setDesabilitado("disabled") 
 
-        const REACT_APP_API_URL = "http://localhost:5000/nova-saida" 
-        const config = { headers: { Authorization: `Bearer ${token}` } }
+        const REACT_APP_API_URL = `http://localhost:5000/editar-item/${idPut}`
         const body = { valor, descricao }
         const url = REACT_APP_API_URL
     
-        const promise = axios.post(url, body, config)
+        const promise = axios.put(url, body)
         promise.then((res) => { 
-            alert("Cadastro realizado!")
-            navigate("/home") 
+            console.log()
+            alert("Edição realizada!")
+            setIdPut(0)
+            navigate("/home")
         })
 
         promise.catch(err => { 
-            setTextoBotao("Salvar saída") 
+            setTextoBotao("Atualizar entrada") 
             setDesabilitado("")            
             alert(err.message) 
             console.log(err)          
         })
-      }  
+    }  
 
     return(
-        <ContainerOut>
-            
-            <FormOut onSubmit={novaSaida}>
-            <TitleOut>Nova saída</TitleOut>
+        <ContainerIn>          
+            <FormIn onSubmit={edtarEntrada}>
+            <TitleIn>Editar entrada</TitleIn>
                 <Input
                     data-test="registry-amount-input"
                     id="valor"
@@ -75,18 +75,18 @@ export default function Out(){
                     required
                 />
                 <Button data-test="registry-save" disabled={desabilitado} type="submit">{textoBotao}</Button>                
-            </FormOut>
-        </ContainerOut>
+            </FormIn>
+        </ContainerIn>
     )
 }
-const ContainerOut = styled.div`
+const ContainerIn = styled.div`
     display: flex;   
     flex-direction: column;
     align-items: center;
     height: 100vh;
     padding: 0 20px;
 `
-const TitleOut = styled.h1`
+const TitleIn = styled.h1`
     font-family: 'Raleway';
     font-style: normal;
     font-weight: 700;
@@ -97,7 +97,7 @@ const TitleOut = styled.h1`
     width: 100%;
     margin: 10px 0 30px;
 `
-const FormOut = styled.form`
+const FormIn = styled.form`
     display: flex;   
     flex-direction: column;
     justify-content: center;
@@ -118,9 +118,9 @@ const Input = styled.input`
     font-weight: 400;
     font-size: 20px;
     line-height: 23px;
-    padding-left: 10px;   
-    ::placeholder{        
-        color: #000000;
+    padding-left: 10px;  
+    ::placeholder{
+        color: #000000;      
     }
 `
 const Button = styled.button`

@@ -1,17 +1,16 @@
 import styled from "styled-components"
-import { Context } from "../contexts/Context"
-import { useState, useContext } from "react"
 import axios from "axios"
+import { MyWalletContext } from "../contexts/MyWalletContext"
+import { useState, useContext } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { Bars } from 'react-loader-spinner'
 
-export default function SignIn(){
-    const REACT_APP_API_URL = "http://localhost:5000/mywalletdb/users"
+export default function SignIn(){    
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [desabilitado, setDesabilitado] = useState("")
     const [textoBotao, setTextoBotao] = useState("Entrar")
-    const { setToken, inputAtivo, inputDesbotado } = useContext(Context) 
+    const { setToken, inputAtivo, inputDesbotado, setUserName, setUserId } = useContext(MyWalletContext) 
     const navigate = useNavigate()
     const botaoLoading = <Bars 
         height="30" 
@@ -27,25 +26,26 @@ export default function SignIn(){
     function loginUser(e) {
         e.preventDefault() 
         setTextoBotao(botaoLoading) 
-        setDesabilitado("disabled")      
+        setDesabilitado("disabled") 
+
+        const REACT_APP_API_URL = "http://localhost:5000/login"
         const body = { email, password }
-        const url = REACT_APP_API_URL
-    
+        const url = REACT_APP_API_URL    
         const promise = axios.post(url, body)
-        promise.then((res) => { 
-            setToken(res.data.token)
-            console.log()
-            localStorage.setItem("email", res.data.email);
-            localStorage.setItem("password", res.data.password);
-            localStorage.setItem("token", res.data.token);
+
+        promise.then((res) => {
+            setToken(res.data.token) 
+            setUserName(res.data.name) 
+            setUserId(res.data.userId)              
+            console.log("Logado com sucesso")            
             navigate("/home") 
         })
 
         promise.catch(err => { 
             setTextoBotao("Entrar") 
             setDesabilitado("")            
-            alert(err.message) 
-            console.log(err)          
+            alert("E-mail ou senha inválida") 
+            console.log(err.message)         
         })
       }  
 
@@ -118,13 +118,12 @@ const Input = styled.input`
     border-radius: 5px;
     margin: 5px 0;
     font-family: 'Raleway';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 23px;
-        color: #000000;
-        padding-left: 10px; 
-
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    color: #000000;
+    padding-left: 10px;
     ::placeholder{        
         color: #000000;    
     }

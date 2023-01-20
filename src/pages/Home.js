@@ -1,49 +1,134 @@
 import styled from "styled-components"
-import { Context } from "../contexts/Context"
-import { useEffect, useState, useContext } from "react"
 import axios from "axios"
-import { useNavigate, Link } from "react-router-dom"
-import logout from "../assets/logout.svg"
+import logoutImg from "../assets/logout.svg"
 import minus from "../assets/minus.svg"
 import plus from "../assets/plus.svg"
+import { useEffect, useContext, useState } from "react"
+import { MyWalletContext } from "../contexts/MyWalletContext"
+import { useNavigate, Link } from "react-router-dom"
+import { ProgressBar } from 'react-loader-spinner'
 
-export default function Home(){ 
-    const REACT_APP_API_URL = "http://localhost:5000/mywalletdb/users"   
-    const { token, setToken, count, setCount } = useContext(Context)
+export default function Home(){      
+    const { token, wallet, setWallet, count, setCount, userName, setIdPut } = useContext(MyWalletContext)
+    const [calc, setCalc] = useState(undefined)       
     const red = "#C70000"
     const green = "#03AC00"
-
-    const navigate = useNavigate()
+    const navigate = useNavigate() 
+    const load = <ProgressBar
+        height="150"
+        width="150"
+        ariaLabel="progress-bar-loading"
+        wrapperStyle={{}}
+        wrapperClass="progress-bar-wrapper"
+        borderColor = '#FFFFFF'
+        barColor = {'#51E5FF'}
+    />
 
     useEffect(() => {
+        const REACT_APP_API_URL = "http://localhost:5000/home" 
         const url = REACT_APP_API_URL    
-        const config = { headers: { Authorization: `Bearer ${token}` } }    
+        const config = { headers: { Authorization: `Bearer ${token}` } }     
         const promise = axios.get(url, config) 
 
-        promise.then(res => {            
-            console.log(res.response.data)        
-        })        
+        promise.then(res => {          
+            setWallet(res.data) 
+        }) 
+
         promise.catch((err) => {
-            console.log(err.response.data)
-        })    
-    }, [count])   
+            console.log(err.message)
+        })        
+    }, [count])
+
+    useEffect(() => {
+        const REACT_APP_API_URL = "http://localhost:5000/calculo" 
+        const url = REACT_APP_API_URL    
+        const config = { headers: { Authorization: `Bearer ${token}` } }     
+        const promise = axios.get(url, config) 
+
+        promise.then(res => {          
+            setCalc(res.data)                
+        }) 
+
+        promise.catch((err) => {
+            console.log(err.message)
+        })        
+    }, [count])
+
+    function deletaItem(id, descricao){
+        if(window.confirm(`Excluir ${descricao}?`)) {
+            const REACT_APP_API_URL = `http://localhost:5000/deletar-item/${id}` 
+            const url = REACT_APP_API_URL     
+            const promise = axios.delete(url) 
+
+            promise.then(res => {  
+                console.log(res)
+                setWallet(undefined)
+                setCalc(undefined)
+                setCount(count+1)              
+            }) 
+
+            promise.catch((err) => {
+                console.log(err)
+                console.log(id)
+            }) 
+        }        
+    }
+
+    function logout(){
+        const REACT_APP_API_URL = `http://localhost:5000/logout/${token}` 
+        const url = REACT_APP_API_URL     
+        const promise = axios.delete(url) 
+
+        promise.then(res => {  
+            setWallet(undefined)
+            setCalc(undefined)
+            navigate("/")              
+        }) 
+
+        promise.catch((err) => {
+            console.log(err)
+        }) 
+              
+    }
+
+    function editarItem(id, status){
+        console.log("clicou " + status)
+        setIdPut(id)
+        if(status === "in"){            
+            navigate("/editar-entrada")
+        } else if(status === "out"){
+            navigate("/editar-saida")
+        }
+    }
+
+    if(wallet === undefined && calc === undefined ) {
+        return <Load>{load}</Load>;
+    }
 
     return(
         <ContainerHome>
             <Header>
-                <h1 data-test="user-name">Olá, Fulano</h1>
-                <img data-test="logout" src={logout} alt="Logout"/>
+                <h1 data-test="user-name">Olá, {userName}</h1>
+                <img data-test="logout" src={logoutImg} onClick={()=>(logout())} alt="Logout"/>
             </Header>  
-            <Wallet>
-                <h2>Não há registros de entrada ou saída</h2>
-                <ContentWallet>
-                    <h4 data-test="registry-name"><span>30/11</span>&nbsp; Almoço mãe</h4>
-                    <p data-test="registry-amount">39,90</p>
-                </ContentWallet>
-               
-                <BalanceWallet>
+            <Wallet>   
+                {wallet.length === 0 ? 
+                    <MsgWallet>
+                        <h2>Não há registros de entrada ou saída</h2> 
+                    </MsgWallet>
+                :   
+                    <>
+                        {wallet.map((w) =>(
+                            <ContentWallet key={w._id} corValor={w.status === "out" ? red : green }>                        
+                                    <h4 data-test="registry-name" onClick={()=>(editarItem(w._id, w.status))}><span>{w.date}</span>&nbsp; {w.descricao}</h4>                        
+                                    <p data-test="registry-amount">{w.valor}<span data-test="registry-delete" onClick={()=>(deletaItem(w._id, w.descricao))}>&nbsp;&nbsp; x</span></p>
+                            </ContentWallet>                    
+                        ))} 
+                    </> 
+                }               
+                <BalanceWallet corTexto={(Math.sign(calc) === -1) ? red : green}>
                     <h4>SALDO</h4>
-                    <p data-test="total-amount">2849,96</p>
+                    <p data-test="total-amount">{calc}</p>
                 </BalanceWallet> 
             </Wallet> 
             <Buttons>
@@ -67,8 +152,17 @@ export default function Home(){
             </Buttons>        
         </ContainerHome>
     )
+    
 }
 
+const Load = styled.div`
+    display: flex;   
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 0 20px;
+`
 const ContainerHome = styled.div`
     display: flex;   
     flex-direction: column;
@@ -82,7 +176,6 @@ const Header = styled.header`
     justify-content: space-between;
     width: 100%;
     padding: 20px 0;
-
     h1{
         font-family: 'Raleway';
         font-style: normal;
@@ -106,6 +199,13 @@ const Wallet = styled.div`
     background: #FFFFFF;
     border-radius: 5px;
     padding-top: 20px;
+`
+const MsgWallet = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    height: 100%;    
     h2{
         font-family: 'Raleway';
         font-style: normal;
@@ -115,8 +215,7 @@ const Wallet = styled.div`
         text-align: center;
         color: #868686;
         width: 60%;
-        margin: auto 0;
-        display: none; //não mostrar msg de carteira vazia
+        justify-content: flex-end;
     }
 `
 const ContentWallet = styled.div`   
@@ -139,7 +238,10 @@ const ContentWallet = styled.div`
         color: #C6C6C6;
     }
     p{
-        color: red;
+        color: ${props => props.corValor};
+    }
+    h5{
+        color: #C6C6C6;
     }
 `
 const BalanceWallet = styled.div`   
@@ -159,7 +261,7 @@ const BalanceWallet = styled.div`
     }    
     p{
         font-weight: 400;
-        color: #03AC00;
+        color: ${props => props.corTexto};
     }
 `
 const Buttons = styled.div`
