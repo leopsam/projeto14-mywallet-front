@@ -9,7 +9,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { ProgressBar } from 'react-loader-spinner'
 
 export default function Home(){      
-    const { token, wallet, setWallet, count, setCount, userName, setIdPut } = useContext(MyWalletContext)
+    const { token, wallet, setWallet, count, setCount, userName, setPut } = useContext(MyWalletContext)
     const [calc, setCalc] = useState(undefined)       
     const red = "#C70000"
     const green = "#03AC00"
@@ -31,11 +31,13 @@ export default function Home(){
         const promise = axios.get(url, config) 
 
         promise.then(res => {          
-            setWallet(res.data) 
+            setWallet(res.data)
         }) 
 
         promise.catch((err) => {
+            alert(err.response.data)
             console.log(err.message)
+            navigate("/")  
         })        
     }, [count])
 
@@ -91,12 +93,12 @@ export default function Home(){
               
     }
 
-    function editarItem(id, status){
-        console.log("clicou " + status)
-        setIdPut(id)
-        if(status === "in"){            
+    function editarItem(unidWallet){
+        console.log("clicou " + unidWallet.status)
+        setPut(unidWallet)
+        if(unidWallet.status === "in"){            
             navigate("/editar-entrada")
-        } else if(status === "out"){
+        } else if(unidWallet.status === "out"){
             navigate("/editar-saida")
         }
     }
@@ -120,7 +122,7 @@ export default function Home(){
                     <>
                         {wallet.map((w) =>(
                             <ContentWallet key={w._id} corValor={w.status === "out" ? red : green }>                        
-                                    <h4 data-test="registry-name" onClick={()=>(editarItem(w._id, w.status))}><span>{w.date}</span>&nbsp; {w.descricao}</h4>                        
+                                    <h4 data-test="registry-name" onClick={()=>(editarItem(w))}><span>{w.date}</span>&nbsp; {w.descricao}</h4>                        
                                     <p data-test="registry-amount">{w.valor}<span data-test="registry-delete" onClick={()=>(deletaItem(w._id, w.descricao))}>&nbsp;&nbsp; x</span></p>
                             </ContentWallet>                    
                         ))} 

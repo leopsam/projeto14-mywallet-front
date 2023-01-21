@@ -10,7 +10,7 @@ export default function In(){
     const [descricao, setDescricao] = useState("")
     const [desabilitado, setDesabilitado] = useState("")
     const [textoBotao, setTextoBotao] = useState("Atualizar saída")
-    const { inputAtivo, inputDesbotado, idPut, setIdPut } = useContext(MyWalletContext) 
+    const { inputAtivo, inputDesbotado, Put, setPut } = useContext(MyWalletContext) 
     const navigate = useNavigate()
     const botaoLoading = <Bars 
         height="30" 
@@ -28,7 +28,7 @@ export default function In(){
         setTextoBotao(botaoLoading) 
         setDesabilitado("disabled") 
 
-        const REACT_APP_API_URL = `http://localhost:5000/editar-item/${idPut}`
+        const REACT_APP_API_URL = `http://localhost:5000/editar-item/${Put._id}`
         const body = { valor, descricao }
         const url = REACT_APP_API_URL
     
@@ -36,7 +36,7 @@ export default function In(){
         promise.then((res) => { 
             console.log()
             alert("Edição realizada!")
-            setIdPut(0)
+            setPut(undefined)
             navigate("/home")
         })
 
@@ -61,7 +61,6 @@ export default function In(){
                     onChange={e => setValor(e.target.value)} 
                     disabled={desabilitado}
                     corFundo={desabilitado ? inputDesbotado : inputAtivo }
-                    required
                 />
                 <Input
                     //data-test="email"
@@ -72,7 +71,6 @@ export default function In(){
                     onChange={e => setDescricao(e.target.value)}
                     disabled={desabilitado}
                     corFundo={desabilitado ? inputDesbotado : inputAtivo } 
-                    required
                 />
                 <Button data-test="registry-save" disabled={desabilitado} type="submit">{textoBotao}</Button>                
             </FormIn>

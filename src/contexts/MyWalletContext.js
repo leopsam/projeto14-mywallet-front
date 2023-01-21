@@ -8,7 +8,7 @@ export function UserProvider( {children} ) {
   const [token, setToken] = useState()
   const [count, setCount] = useState(2) 
   const [wallet, setWallet] = useState(undefined)
-  const [idPut, setIdPut] = useState()
+  const [Put, setPut] = useState()
   
   const inputDesbotado = "#F2F2F2"
   const inputAtivo = "#FFFFFF"
@@ -27,8 +27,8 @@ export function UserProvider( {children} ) {
         setWallet,
         userId,
         setUserId,
-        idPut,
-        setIdPut
+        Put,
+        setPut
     }}>
       {children}
     </MyWalletContext.Provider>
