@@ -28,7 +28,7 @@ export default function Out(){
         setTextoBotao(botaoLoading) 
         setDesabilitado("disabled")  
 
-        const REACT_APP_API_URL = "http://localhost:5000/nova-saida" 
+        const REACT_APP_API_URL = "https://mywallet-api-x1as.onrender.com/nova-saida" 
         const config = { headers: { Authorization: `Bearer ${token}` } }
         const body = { valor, descricao }
         const url = REACT_APP_API_URL

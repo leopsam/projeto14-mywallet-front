@@ -30,7 +30,7 @@ export default function SignUp(){
         setTextoBotao(botaoLoading) 
         setDesabilitado("disabled") 
 
-        const REACT_APP_API_URL = "http://localhost:5000/cadastro"
+        const REACT_APP_API_URL = "https://mywallet-api-x1as.onrender.com/cadastro"
         const body = { name, email, password, confPassword }
         const url = REACT_APP_API_URL    
         const promise = axios.post(url, body)

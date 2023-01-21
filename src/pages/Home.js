@@ -25,7 +25,7 @@ export default function Home(){
     />
 
     useEffect(() => {
-        const REACT_APP_API_URL = "http://localhost:5000/home" 
+        const REACT_APP_API_URL = "https://mywallet-api-x1as.onrender.com/home" 
         const url = REACT_APP_API_URL    
         const config = { headers: { Authorization: `Bearer ${token}` } }     
         const promise = axios.get(url, config) 
@@ -42,7 +42,7 @@ export default function Home(){
     }, [count])
 
     useEffect(() => {
-        const REACT_APP_API_URL = "http://localhost:5000/calculo" 
+        const REACT_APP_API_URL = "https://mywallet-api-x1as.onrender.com/calculo" 
         const url = REACT_APP_API_URL    
         const config = { headers: { Authorization: `Bearer ${token}` } }     
         const promise = axios.get(url, config) 
@@ -58,7 +58,7 @@ export default function Home(){
 
     function deletaItem(id, descricao){
         if(window.confirm(`Excluir ${descricao}?`)) {
-            const REACT_APP_API_URL = `http://localhost:5000/deletar-item/${id}` 
+            const REACT_APP_API_URL = `https://mywallet-api-x1as.onrender.com/deletar-item/${id}` 
             const url = REACT_APP_API_URL     
             const promise = axios.delete(url) 
 
@@ -77,7 +77,7 @@ export default function Home(){
     }
 
     function logout(){
-        const REACT_APP_API_URL = `http://localhost:5000/logout/${token}` 
+        const REACT_APP_API_URL = `https://mywallet-api-x1as.onrender.com/logout/${token}` 
         const url = REACT_APP_API_URL     
         const promise = axios.delete(url) 
 

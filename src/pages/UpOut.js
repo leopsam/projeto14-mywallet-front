@@ -28,7 +28,7 @@ export default function In(){
         setTextoBotao(botaoLoading) 
         setDesabilitado("disabled") 
 
-        const REACT_APP_API_URL = `http://localhost:5000/editar-item/${Put._id}`
+        const REACT_APP_API_URL = `https://mywallet-api-x1as.onrender.com/editar-item/${Put._id}`
         const body = { valor, descricao }
         const url = REACT_APP_API_URL
     
