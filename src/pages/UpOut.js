@@ -53,7 +53,6 @@ export default function In(){
             <FormIn onSubmit={edtarSaida}>
             <TitleIn>Editar saída</TitleIn>
                 <Input
-                    //data-test="name"
                     id="valor"
                     type="text"
                     placeholder="Valor"
@@ -63,7 +62,6 @@ export default function In(){
                     corFundo={desabilitado ? inputDesbotado : inputAtivo }
                 />
                 <Input
-                    //data-test="email"
                     id="descricao"
                     type="text"
                     placeholder="Descrição"

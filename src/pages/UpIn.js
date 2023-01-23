@@ -26,8 +26,7 @@ export default function In(){
     function edtarEntrada(e) {
         e.preventDefault() 
         setTextoBotao(botaoLoading) 
-        setDesabilitado("disabled") 
-       
+        setDesabilitado("disabled")        
 
         const REACT_APP_API_URL = `https://mywallet-api-x1as.onrender.com/editar-item/${Put._id}`
         const body = { valor, descricao }
